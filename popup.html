@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تغییر‌دهنده فونت تلگرام</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="popup-container">
+        <div class="popup-header">
+            <div class="header-icon">
+                <img src="assets/logo.png" alt="لوگو" class="logo-img">
+            </div>
+            <div class="header-text">
+                <span class="popup-title">تغییر‌دهنده فونت تلگرام</span>
+                <span class="popup-subtitle">شخصی‌سازی تایپوگرافی وب تلگرام</span>
+            </div>
+        </div>
+
+        <div class="controls-wrapper">
+            <div class="card-section font-card" id="fontCard">
+                <div class="section-label">
+                    <span>فونت سفارشی</span>
+                    <span class="active-dot" id="fontActiveDot" title="فعال است"></span>
+                </div>
+                <div class="segmented-control" id="fontSegment">
+                    <button type="button" class="seg-btn seg-disabled" data-value="false">غیرفعال</button>
+                    <button type="button" class="seg-btn seg-enabled" data-value="true">فعال</button>
+                    <input type="checkbox" id="fontToggle" class="hidden-input" aria-hidden="true">
+                </div>
+            </div>
+
+            <div class="card-section side-card" id="sideCard">
+                <div class="section-label">
+                    <span>تغییر سایز فونت پنل کناری</span>
+                </div>
+                <div class="segmented-control" id="sidePanelSegment">
+                    <button type="button" class="seg-btn seg-disabled" data-value="false">غیرفعال</button>
+                    <button type="button" class="seg-btn seg-enabled" data-value="true">فعال</button>
+                    <input type="checkbox" id="sidePanelToggle" class="hidden-input" checked aria-hidden="true">
+                </div>
+            </div>
+
+            <div class="card-section slider-section">
+                <div class="section-row">
+                    <span class="section-label">سایز فونت</span>
+                    <span class="slider-value" id="fontSizeValue">100%</span>
+                </div>
+                <div class="slider-track-wrap">
+                    <input type="range" id="fontSizeSlider" min="80" max="150" value="100" step="1">
+                    <div class="slider-minmax">
+                        <span>80%</span>
+                        <span>150%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>

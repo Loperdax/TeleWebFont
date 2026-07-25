@@ -1,4 +1,3 @@
-// Inject Vazirmatn font @font-face rules into the page
 const fontWeights = [
   { name: 'Vazirmatn-Thin', weight: 100, style: 'normal' },
   { name: 'Vazirmatn-ExtraLight', weight: 200, style: 'normal' },
@@ -11,13 +10,30 @@ const fontWeights = [
   { name: 'Vazirmatn-Black', weight: 900, style: 'normal' },
 ];
 
-function injectFontFaces() {
-  const styleEl = document.createElement('style');
-  styleEl.id = 'telewebfont-styles';
+const sidePanelSelectors = [
+  '#column-left',
+  '.column-left',
+  '.sidebar-left',
+  '.Sidebar',
+  '.left-side',
+  '.left-slot',
+  '.LeftPanel',
+  'aside[data-telegram-sidebar="true"]',
+  '.sidebar',
+  '#LeftColumn',
+];
 
+let currentFontEnabled = true;
+let currentFontSizePercent = 100;
+let currentIncludeSidePanel = true;
+
+const sidePanelCache = new Set();
+let sidePanelCacheTime = 0;
+const SIDE_CACHE_TTL_MS = 150;
+
+function buildFontFamilyCSS() {
   let css = '';
 
-  // Add @font-face for each static weight
   fontWeights.forEach((font) => {
     const fontUrl = chrome.runtime.getURL(`fonts/${font.name}.woff2`);
     css += `
@@ -30,7 +46,6 @@ function injectFontFaces() {
 }`;
   });
 
-  // Add @font-face for the variable font
   const variableUrl = chrome.runtime.getURL('fonts/Vazirmatn[wght].woff2');
   css += `
 @font-face {
@@ -41,20 +56,172 @@ function injectFontFaces() {
   src: url('${variableUrl}') format('woff2-variations');
 }`;
 
-  // Apply Vazirmatn globally with high specificity
   css += `
 * {
   font-family: 'Vazirmatn', sans-serif !important;
 }`;
 
-  styleEl.textContent = css;
-  document.head.appendChild(styleEl);
+  return css;
 }
 
-// Run on DOMContentLoaded to ensure head exists
+function buildSizeRuleCSS(percent, includeSidePanel) {
+  const scale = (percent / 100).toFixed(4);
+  let css = `body{zoom:${scale} !important;}`;
+  if (!includeSidePanel) {
+    const anti = (100 / percent).toFixed(4);
+    css += sidePanelSelectors.map((s) => `${s}{zoom:${anti} !important;}`).join('');
+  }
+  return css;
+}
+
+function ensureStyleElement(id, content) {
+  let styleEl = document.getElementById(id);
+  if (!styleEl) {
+    styleEl = document.createElement('style');
+    styleEl.id = id;
+    document.head.appendChild(styleEl);
+  }
+  styleEl.textContent = content;
+}
+
+function removeStyleElement(id) {
+  const styleEl = document.getElementById(id);
+  if (styleEl) styleEl.remove();
+}
+
+function refreshSidePanelCache(force) {
+  const now = Date.now();
+  if (!force && sidePanelCache.size > 0 && (now - sidePanelCacheTime) < SIDE_CACHE_TTL_MS) return;
+  sidePanelCacheTime = now;
+  sidePanelCache.clear();
+  sidePanelSelectors.forEach((sel) => {
+    const nodes = document.querySelectorAll(sel);
+    for (let i = 0; i < nodes.length; i++) {
+      const el = nodes[i];
+      if (el instanceof HTMLElement) sidePanelCache.add(el);
+    }
+  });
+}
+
+function applyFontFamily(enabled) {
+  if (enabled) {
+    if (!document.getElementById('telewebfont-family')) {
+      ensureStyleElement('telewebfont-family', buildFontFamilyCSS());
+    }
+  } else {
+    removeStyleElement('telewebfont-family');
+  }
+}
+
+function applySideZoomInline(includeSidePanel, percent) {
+  refreshSidePanelCache(false);
+  const zoomValue = includeSidePanel ? '1' : (100 / percent).toFixed(4);
+  sidePanelCache.forEach((el) => {
+    if (el instanceof HTMLElement) el.style.zoom = zoomValue;
+  });
+}
+
+let sizeStyleEl = null;
+let lastSizeCSS = '';
+let lastPercentForCSS = -1;
+let lastSideForCSS = null;
+
+function applySizeRuleStyle(percent, includeSidePanel) {
+  if (percent === lastPercentForCSS && includeSidePanel === lastSideForCSS && sizeStyleEl) return;
+  lastPercentForCSS = percent;
+  lastSideForCSS = includeSidePanel;
+  const css = buildSizeRuleCSS(percent, includeSidePanel);
+  if (css === lastSizeCSS && sizeStyleEl) return;
+  lastSizeCSS = css;
+  if (!sizeStyleEl) {
+    sizeStyleEl = document.createElement('style');
+    sizeStyleEl.id = 'telewebfont-size';
+    document.head.appendChild(sizeStyleEl);
+  }
+  sizeStyleEl.textContent = css;
+}
+
+function applyFontSize(percent, includeSidePanel) {
+  currentFontSizePercent = percent;
+  currentIncludeSidePanel = includeSidePanel;
+  const scaleStr = (percent / 100).toFixed(4);
+  applySizeRuleStyle(percent, includeSidePanel);
+  try {
+    if (document.body) document.body.style.zoom = scaleStr;
+  } catch (e) {}
+  applySideZoomInline(includeSidePanel, percent);
+}
+
+function applyState() {
+  applyFontFamily(currentFontEnabled);
+  applyFontSize(currentFontSizePercent, currentIncludeSidePanel);
+}
+
+chrome.runtime.onMessage.addListener((request) => {
+  let changed = false;
+  if (request.action === 'toggleFont') {
+    currentFontEnabled = !!request.enabled;
+    if (typeof request.fontSizePercent === 'number') currentFontSizePercent = request.fontSizePercent;
+    if (typeof request.includeSidePanel === 'boolean') currentIncludeSidePanel = request.includeSidePanel;
+    changed = true;
+  } else if (request.action === 'changeFontSize') {
+    if (typeof request.fontSizePercent === 'number') currentFontSizePercent = request.fontSizePercent;
+    if (typeof request.includeSidePanel === 'boolean') currentIncludeSidePanel = request.includeSidePanel;
+    changed = true;
+  } else if (request.action === 'toggleSidePanel') {
+    if (typeof request.includeSidePanel === 'boolean') currentIncludeSidePanel = request.includeSidePanel;
+    if (typeof request.fontSizePercent === 'number') currentFontSizePercent = request.fontSizePercent;
+    changed = true;
+  }
+  if (changed) applyState();
+});
+
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area !== 'sync') return;
+  let needUpdate = false;
+  if (changes.fontEnabled) {
+    currentFontEnabled = changes.fontEnabled.newValue !== false;
+    needUpdate = true;
+  }
+  if (changes.fontSizePercent) {
+    currentFontSizePercent = changes.fontSizePercent.newValue || 100;
+    needUpdate = true;
+  }
+  if (changes.includeSidePanel) {
+    currentIncludeSidePanel = changes.includeSidePanel.newValue !== false;
+    needUpdate = true;
+  }
+  if (needUpdate) applyState();
+});
+
+let sidePanelRefreshTimer = null;
+function startSidePanelRefreshInterval() {
+  if (sidePanelRefreshTimer) return;
+  sidePanelRefreshTimer = setInterval(() => {
+    refreshSidePanelCache(true);
+    applySideZoomInline(currentIncludeSidePanel, currentFontSizePercent);
+  }, 1000);
+}
+
+function loadStateAndApply() {
+  chrome.storage.sync.get(['fontEnabled', 'fontSizePercent', 'includeSidePanel'], (result) => {
+    currentFontEnabled = result.fontEnabled !== false;
+    currentFontSizePercent = result.fontSizePercent || 100;
+    currentIncludeSidePanel = result.includeSidePanel !== false;
+    lastPercentForCSS = -1;
+    lastSideForCSS = null;
+    lastSizeCSS = '';
+    applyState();
+  });
+}
+
+loadStateAndApply();
+
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', injectFontFaces);
+  document.addEventListener('DOMContentLoaded', () => {
+    loadStateAndApply();
+    startSidePanelRefreshInterval();
+  });
 } else {
-  injectFontFaces();
+  startSidePanelRefreshInterval();
 }
-

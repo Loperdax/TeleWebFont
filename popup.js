@@ -92,31 +92,37 @@ function currentState() {
     };
 }
 
+function silentStorageSet(obj) {
+    try {
+        chrome.storage.sync.set(obj, () => {
+            void chrome.runtime.lastError;
+        });
+    } catch (e) {}
+}
+
 toggle.addEventListener('change', () => {
     const st = currentState();
     setFontCardActive(st.enabled);
-    chrome.storage.sync.set({ fontEnabled: st.enabled }, () => {
-        broadcastToTabs({ action: 'toggleFont', enabled: st.enabled, fontSizePercent: st.fontSizePercent, includeSidePanel: st.includeSidePanel });
-    });
+    silentStorageSet({ fontEnabled: st.enabled });
+    broadcastToTabs({ action: 'toggleFont', enabled: st.enabled, fontSizePercent: st.fontSizePercent, includeSidePanel: st.includeSidePanel });
 });
 
 sidePanelToggle.addEventListener('change', () => {
     const st = currentState();
     setSideCardActive(st.includeSidePanel);
-    chrome.storage.sync.set({ includeSidePanel: st.includeSidePanel }, () => {
-        broadcastToTabs({ action: 'toggleSidePanel', includeSidePanel: st.includeSidePanel, fontSizePercent: st.fontSizePercent, enabled: st.enabled });
-    });
+    silentStorageSet({ includeSidePanel: st.includeSidePanel });
+    broadcastToTabs({ action: 'toggleSidePanel', includeSidePanel: st.includeSidePanel, fontSizePercent: st.fontSizePercent, enabled: st.enabled });
 });
 
 fontSizeSlider.addEventListener('input', () => {
     const size = parseInt(fontSizeSlider.value, 10);
     fontSizeValue.textContent = size + '%';
     updateSliderFill();
-    const st = currentState();
-    broadcastToTabs({ action: 'changeFontSize', fontSizePercent: size, enabled: st.enabled, includeSidePanel: st.includeSidePanel });
 });
 
 fontSizeSlider.addEventListener('change', () => {
     const size = parseInt(fontSizeSlider.value, 10);
-    chrome.storage.sync.set({ fontSizePercent: size });
+    const st = currentState();
+    silentStorageSet({ fontSizePercent: size });
+    broadcastToTabs({ action: 'changeFontSize', fontSizePercent: size, enabled: st.enabled, includeSidePanel: st.includeSidePanel });
 });

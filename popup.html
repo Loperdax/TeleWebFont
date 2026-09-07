@@ -13,48 +13,63 @@
                 <img src="assets/logo.png" alt="لوگو" class="logo-img">
             </div>
             <div class="header-text">
-                <span class="popup-title">تغییر‌دهنده فونت تلگرام</span>
-                <span class="popup-subtitle">شخصی‌سازی تایپوگرافی وب تلگرام</span>
+                <span class="popup-title" data-i18n="title">تغییر‌دهنده فونت تلگرام</span>
+                <span class="popup-subtitle" data-i18n="subtitle">شخصی‌سازی تایپوگرافی وب تلگرام</span>
+            </div>
+            <div class="lang-picker" id="langPicker">
+                <button type="button" class="lang-btn" data-lang="fa" title="فارسی">FA</button>
+                <button type="button" class="lang-btn" data-lang="en" title="English">EN</button>
+                <button type="button" class="lang-btn" data-lang="ar" title="العربية">AR</button>
             </div>
         </div>
 
-        <div class="controls-wrapper">
-            <div class="card-section font-card" id="fontCard">
-                <div class="section-label">
-                    <span>فونت سفارشی</span>
-                    <span class="active-dot" id="fontActiveDot" title="فعال است"></span>
-                </div>
-                <div class="segmented-control" id="fontSegment">
-                    <button type="button" class="seg-btn seg-disabled" data-value="false">غیرفعال</button>
-                    <button type="button" class="seg-btn seg-enabled" data-value="true">فعال</button>
-                    <input type="checkbox" id="fontToggle" class="hidden-input" aria-hidden="true">
+        <div class="panel" id="fontCard">
+            <div class="row">
+                <span class="row-label" data-i18n="customFont">فونت سفارشی</span>
+                <button type="button" class="switch" id="fontSwitch" role="switch" aria-checked="false"></button>
+                <input type="checkbox" id="fontToggle" class="hidden-input" aria-hidden="true">
+            </div>
+
+            <div class="row row-stack">
+                <div class="font-picker" id="fontPicker">
+                    <button type="button" class="font-btn" data-font="vazirmatn" style="font-family:'Vazirmatn'" data-i18n="fontVazirmatn">وزیرمتن</button>
+                    <button type="button" class="font-btn" data-font="lateef" style="font-family:'LateefPreview'" data-i18n="fontLateef">لطیف</button>
+                    <button type="button" class="font-btn" data-font="iransans" style="font-family:'IranSansPreview'" data-i18n="fontIransans">ایران‌سنس</button>
                 </div>
             </div>
 
-            <div class="card-section side-card" id="sideCard">
-                <div class="section-label">
-                    <span>تغییر سایز فونت پنل کناری</span>
+            <div class="row row-stack">
+                <div class="row-head">
+                    <span class="row-label" data-i18n="fontSize">سایز فونت</span>
+                    <span class="row-value" id="fontSizeValue">100%</span>
                 </div>
-                <div class="segmented-control" id="sidePanelSegment">
-                    <button type="button" class="seg-btn seg-disabled" data-value="false">غیرفعال</button>
-                    <button type="button" class="seg-btn seg-enabled" data-value="true">فعال</button>
-                    <input type="checkbox" id="sidePanelToggle" class="hidden-input" checked aria-hidden="true">
-                </div>
+                <input type="range" id="fontSizeSlider" min="80" max="150" value="100" step="1">
             </div>
 
-            <div class="card-section slider-section">
-                <div class="section-row">
-                    <span class="section-label">سایز فونت</span>
-                    <span class="slider-value" id="fontSizeValue">100%</span>
+            <div class="row row-stack">
+                <div class="row-head">
+                    <span class="row-label" data-i18n="fontWeight">وزن فونت</span>
+                    <span class="row-value" id="fontWeightValue">پیش‌فرض</span>
                 </div>
-                <div class="slider-track-wrap">
-                    <input type="range" id="fontSizeSlider" min="80" max="150" value="100" step="1">
-                    <div class="slider-minmax">
-                        <span>80%</span>
-                        <span>150%</span>
-                    </div>
-                </div>
+                <input type="range" id="fontWeightSlider" min="0" max="900" value="0" step="100">
             </div>
+        </div>
+
+        <div class="panel" id="sideCard">
+            <div class="row">
+                <span class="row-label" data-i18n="sidePanel">تغییر سایز فونت پنل کناری</span>
+                <button type="button" class="switch" id="sideSwitch" role="switch" aria-checked="true"></button>
+                <input type="checkbox" id="sidePanelToggle" class="hidden-input" checked aria-hidden="true">
+            </div>
+        </div>
+
+        <div class="popup-footer">
+            <div class="footer-links">
+                <a href="https://loperdax.github.io/TeleWebFont/" target="_blank" rel="noopener" data-i18n="homepage">Homepage</a>
+                <span class="footer-dot">•</span>
+                <a href="https://github.com/Loperdax/TeleWebFont" target="_blank" rel="noopener" data-i18n="github">Github</a>
+            </div>
+            <a class="footer-author" href="https://loperdax.github.io" target="_blank" rel="noopener">By AmirMohammad Shamsi</a>
         </div>
     </div>
     <script src="popup.js"></script>

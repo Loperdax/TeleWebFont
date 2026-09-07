@@ -1,14 +1,42 @@
-const fontWeights = [
-  { name: 'Vazirmatn-Thin', weight: 100, style: 'normal' },
-  { name: 'Vazirmatn-ExtraLight', weight: 200, style: 'normal' },
-  { name: 'Vazirmatn-Light', weight: 300, style: 'normal' },
-  { name: 'Vazirmatn-Regular', weight: 400, style: 'normal' },
-  { name: 'Vazirmatn-Medium', weight: 500, style: 'normal' },
-  { name: 'Vazirmatn-SemiBold', weight: 600, style: 'normal' },
-  { name: 'Vazirmatn-Bold', weight: 700, style: 'normal' },
-  { name: 'Vazirmatn-ExtraBold', weight: 800, style: 'normal' },
-  { name: 'Vazirmatn-Black', weight: 900, style: 'normal' },
-];
+// Weights a family doesn't ship are synthesized by the browser.
+const FONTS = {
+  vazirmatn: {
+    family: 'Vazirmatn',
+    variable: 'fonts/Vazirmatn[wght].woff2',
+    files: [
+      ['fonts/Vazirmatn-Thin.woff2', 100],
+      ['fonts/Vazirmatn-ExtraLight.woff2', 200],
+      ['fonts/Vazirmatn-Light.woff2', 300],
+      ['fonts/Vazirmatn-Regular.woff2', 400],
+      ['fonts/Vazirmatn-Medium.woff2', 500],
+      ['fonts/Vazirmatn-SemiBold.woff2', 600],
+      ['fonts/Vazirmatn-Bold.woff2', 700],
+      ['fonts/Vazirmatn-ExtraBold.woff2', 800],
+      ['fonts/Vazirmatn-Black.woff2', 900],
+    ],
+  },
+  lateef: {
+    family: 'Lateef',
+    files: [
+      ['fonts/Lateef-ExtraLight.ttf', 200],
+      ['fonts/Lateef-Light.ttf', 300],
+      ['fonts/Lateef-Regular.ttf', 400],
+      ['fonts/Lateef-Medium.ttf', 500],
+      ['fonts/Lateef-SemiBold.ttf', 600],
+      ['fonts/Lateef-Bold.ttf', 700],
+      ['fonts/Lateef-ExtraBold.ttf', 800],
+    ],
+  },
+  iransans: {
+    family: 'Iranian Sans',
+    files: [
+      ['fonts/irsans.ttf', 400],
+      ['fonts/irsansb.ttf', 700],
+    ],
+  },
+};
+
+const DEFAULT_FONT = 'vazirmatn';
 
 const sidePanelSelectors = [
   '#column-left',
@@ -26,39 +54,43 @@ const sidePanelSelectors = [
 let currentFontEnabled = true;
 let currentFontSizePercent = 100;
 let currentIncludeSidePanel = true;
+let currentFontWeight = 0; // 0 = keep Telegram's own weights
+let currentFontFamily = DEFAULT_FONT;
 
 const sidePanelCache = new Set();
 let sidePanelCacheTime = 0;
 const SIDE_CACHE_TTL_MS = 150;
 
-function buildFontFamilyCSS() {
+function buildFontFamilyCSS(fontKey) {
+  const font = FONTS[fontKey] || FONTS[DEFAULT_FONT];
   let css = '';
 
-  fontWeights.forEach((font) => {
-    const fontUrl = chrome.runtime.getURL(`fonts/${font.name}.woff2`);
+  font.files.forEach(([path, weight]) => {
+    const format = path.endsWith('.ttf') ? 'truetype' : 'woff2';
     css += `
 @font-face {
-  font-family: 'Vazirmatn';
-  font-style: ${font.style};
-  font-weight: ${font.weight};
+  font-family: '${font.family}';
+  font-style: normal;
+  font-weight: ${weight};
   font-display: swap;
-  src: url('${fontUrl}') format('woff2');
+  src: url('${chrome.runtime.getURL(path)}') format('${format}');
 }`;
   });
 
-  const variableUrl = chrome.runtime.getURL('fonts/Vazirmatn[wght].woff2');
-  css += `
+  if (font.variable) {
+    css += `
 @font-face {
-  font-family: 'Vazirmatn';
+  font-family: '${font.family}';
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url('${variableUrl}') format('woff2-variations');
+  src: url('${chrome.runtime.getURL(font.variable)}') format('woff2-variations');
 }`;
+  }
 
   css += `
 * {
-  font-family: 'Vazirmatn', sans-serif !important;
+  font-family: '${font.family}', sans-serif !important;
 }`;
 
   return css;
@@ -103,13 +135,24 @@ function refreshSidePanelCache(force) {
   });
 }
 
-function applyFontFamily(enabled) {
-  if (enabled) {
-    if (!document.getElementById('telewebfont-family')) {
-      ensureStyleElement('telewebfont-family', buildFontFamilyCSS());
-    }
-  } else {
+let lastFontKey = null;
+
+function applyFontFamily(enabled, fontKey) {
+  if (!enabled) {
     removeStyleElement('telewebfont-family');
+    lastFontKey = null;
+    return;
+  }
+  if (fontKey === lastFontKey && document.getElementById('telewebfont-family')) return;
+  lastFontKey = fontKey;
+  ensureStyleElement('telewebfont-family', buildFontFamilyCSS(fontKey));
+}
+
+function applyFontWeight(enabled, weight) {
+  if (enabled && weight) {
+    ensureStyleElement('telewebfont-weight', `*{font-weight:${weight} !important;}`);
+  } else {
+    removeStyleElement('telewebfont-weight');
   }
 }
 
@@ -153,27 +196,22 @@ function applyFontSize(percent, includeSidePanel) {
 }
 
 function applyState() {
-  applyFontFamily(currentFontEnabled);
+  applyFontFamily(currentFontEnabled, currentFontFamily);
+  applyFontWeight(currentFontEnabled, currentFontWeight);
   applyFontSize(currentFontSizePercent, currentIncludeSidePanel);
 }
 
+const ACTIONS = ['toggleFont', 'changeFontSize', 'toggleSidePanel', 'changeFontWeight', 'changeFontFamily'];
+
 chrome.runtime.onMessage.addListener((request) => {
-  let changed = false;
-  if (request.action === 'toggleFont') {
-    currentFontEnabled = !!request.enabled;
-    if (typeof request.fontSizePercent === 'number') currentFontSizePercent = request.fontSizePercent;
-    if (typeof request.includeSidePanel === 'boolean') currentIncludeSidePanel = request.includeSidePanel;
-    changed = true;
-  } else if (request.action === 'changeFontSize') {
-    if (typeof request.fontSizePercent === 'number') currentFontSizePercent = request.fontSizePercent;
-    if (typeof request.includeSidePanel === 'boolean') currentIncludeSidePanel = request.includeSidePanel;
-    changed = true;
-  } else if (request.action === 'toggleSidePanel') {
-    if (typeof request.includeSidePanel === 'boolean') currentIncludeSidePanel = request.includeSidePanel;
-    if (typeof request.fontSizePercent === 'number') currentFontSizePercent = request.fontSizePercent;
-    changed = true;
-  }
-  if (changed) applyState();
+  if (!ACTIONS.includes(request.action)) return;
+  // Every popup message carries the full state, so just take whatever is present.
+  if (typeof request.enabled === 'boolean') currentFontEnabled = request.enabled;
+  if (typeof request.fontSizePercent === 'number') currentFontSizePercent = request.fontSizePercent;
+  if (typeof request.includeSidePanel === 'boolean') currentIncludeSidePanel = request.includeSidePanel;
+  if (typeof request.fontWeight === 'number') currentFontWeight = request.fontWeight;
+  if (typeof request.fontFamily === 'string') currentFontFamily = request.fontFamily;
+  applyState();
 });
 
 chrome.storage.onChanged.addListener((changes, area) => {
@@ -191,6 +229,14 @@ chrome.storage.onChanged.addListener((changes, area) => {
     currentIncludeSidePanel = changes.includeSidePanel.newValue !== false;
     needUpdate = true;
   }
+  if (changes.fontWeight) {
+    currentFontWeight = changes.fontWeight.newValue || 0;
+    needUpdate = true;
+  }
+  if (changes.fontFamily) {
+    currentFontFamily = changes.fontFamily.newValue || DEFAULT_FONT;
+    needUpdate = true;
+  }
   if (needUpdate) applyState();
 });
 
@@ -204,10 +250,13 @@ function startSidePanelRefreshInterval() {
 }
 
 function loadStateAndApply() {
-  chrome.storage.sync.get(['fontEnabled', 'fontSizePercent', 'includeSidePanel'], (result) => {
+  chrome.storage.sync.get(['fontEnabled', 'fontSizePercent', 'includeSidePanel', 'fontWeight', 'fontFamily'], (result) => {
     currentFontEnabled = result.fontEnabled !== false;
     currentFontSizePercent = result.fontSizePercent || 100;
     currentIncludeSidePanel = result.includeSidePanel !== false;
+    currentFontWeight = result.fontWeight || 0;
+    currentFontFamily = result.fontFamily || DEFAULT_FONT;
+    lastFontKey = null;
     lastPercentForCSS = -1;
     lastSideForCSS = null;
     lastSizeCSS = '';

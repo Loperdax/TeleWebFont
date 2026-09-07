@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تغییر‌دهنده فونت تلگرام | Telegram Font Changer</title>
+<meta name="description" content="اکستنشن سبک کروم و فایرفاکس برای تغییر فونت تلگرام وب به وزیرمتن، لطیف یا ایران‌سنس — با کنترل زنده‌ی سایز و وزن فونت.">
+
+<meta property="og:title" content="تغییر‌دهنده فونت تلگرام">
+<meta property="og:description" content="فونت تلگرام وب رو عوض کن. سایز و وزنش رو زنده تنظیم کن.">
+<meta property="og:image" content="https://raw.githubusercontent.com/Loperdax/TeleWebFont/main/assets/logo.png">
+<meta property="og:type" content="website">
+
+<link rel="icon" href="https://raw.githubusercontent.com/Loperdax/TeleWebFont/main/assets/48x48.png">
+
+<style>
+@font-face{font-family:'Vazirmatn';font-weight:100 900;font-display:swap;
+  src:url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn[wght].woff2') format('woff2-variations');}
+@font-face{font-family:'Lateef';font-weight:400;font-display:swap;
+  src:url('../fonts/Lateef-Regular.ttf') format('truetype');}
+@font-face{font-family:'Lateef';font-weight:700;font-display:swap;
+  src:url('../fonts/Lateef-Bold.ttf') format('truetype');}
+@font-face{font-family:'Iranian Sans';font-weight:400;font-display:swap;
+  src:url('../fonts/irsans.ttf') format('truetype');}
+@font-face{font-family:'Iranian Sans';font-weight:700;font-display:swap;
+  src:url('../fonts/irsansb.ttf') format('truetype');}
+
+:root{
+  --bg:#faf9f7; --panel:#fff; --ink:#1c1c20; --muted:#6b6b73;
+  --line:rgba(0,0,0,.09); --accent:#a63d5c; --accent-soft:#f4e6ea;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#131316;--panel:#1b1b1f;--ink:#f2f2f5;--muted:#9a9aa2;
+    --line:rgba(255,255,255,.1);--accent:#e8899f;--accent-soft:rgba(232,137,159,.12);}
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:'Vazirmatn',system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;
+  line-height:1.75;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:880px;margin:0 auto;padding:0 24px}
+
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:20px 0;flex-wrap:wrap-reverse}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600}
+.brand img{width:34px;height:34px}
+.cta-row{display:flex;gap:10px;flex-wrap:wrap}
+
+.btn{display:inline-block;padding:9px 18px;border-radius:999px;font-size:14px;
+  font-weight:500;text-decoration:none;border:1px solid var(--line);
+  color:var(--ink);background:var(--panel);transition:.18s}
+.btn:hover{transform:translateY(-1px);border-color:var(--accent)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-primary:hover{opacity:.9}
+
+.hero{text-align:center;padding:56px 0 40px}
+.badge{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);
+  background:var(--accent-soft);border-radius:999px;padding:5px 14px;margin-bottom:20px}
+.badge b{color:var(--accent);font-weight:600}
+h1{font-size:clamp(34px,6vw,56px);font-weight:800;letter-spacing:-.02em;line-height:1.25}
+.sub{color:var(--muted);margin-top:14px;font-size:17px}
+
+.demo{background:var(--panel);border:1px solid var(--line);border-radius:18px;
+  padding:26px;margin:8px 0 12px}
+.demo-text{font-size:22px;min-height:104px;transition:font-family .2s,font-size .2s,font-weight .2s}
+.demo-controls{display:flex;gap:18px;flex-wrap:wrap;align-items:center;
+  border-top:1px solid var(--line);margin-top:20px;padding-top:18px}
+.ctl{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--muted)}
+.ctl select,.ctl input[type=range]{accent-color:var(--accent)}
+.ctl select{font-family:inherit;font-size:13px;padding:5px 9px;border-radius:8px;
+  border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.ctl output{color:var(--ink);min-width:56px;font-variant-numeric:tabular-nums}
+
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:14px;padding:44px 0}
+.feat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}
+.feat h3{font-size:15.5px;margin-bottom:6px}
+.feat p{font-size:13.5px;color:var(--muted);line-height:1.7}
+
+.section-title{text-align:center;font-size:13px;color:var(--muted);margin-bottom:18px}
+.fonts{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;padding-bottom:48px}
+.font-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+  padding:22px;text-align:center}
+.font-card .sample{font-size:27px;margin-bottom:8px}
+.font-card .nm{font-size:12.5px;color:var(--muted)}
+
+.changes{display:flex;flex-direction:column;gap:12px;padding-bottom:34px}
+.rel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.rel-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px}
+.rel-v{font-weight:700;color:var(--accent);font-size:15px}
+.rel-date{font-size:12.5px;color:var(--muted)}
+.rel ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.rel li{font-size:14px;position:relative;padding-inline-start:16px;line-height:1.7}
+.rel li::before{content:"";position:absolute;inset-inline-start:0;top:.62em;
+  width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:.5}
+
+footer{border-top:1px solid var(--line);padding:26px 0 40px;
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  font-size:13px;color:var(--muted)}
+footer a{color:var(--muted);text-decoration:none}
+footer a:hover{color:var(--accent)}
+.ltr{direction:ltr}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="https://chromewebstore.google.com/detail/telegram-font-changer/cceldipdhnhkcmdooeehbnciimlahlmp">نصب روی کروم</a>
+      <a class="btn" href="https://github.com/Loperdax/TeleWebFont">دریافت از گیت‌هاب</a>
+    </div>
+    <div class="brand">
+      <span>تغییر‌دهنده فونت تلگرام</span>
+      <img src="https://raw.githubusercontent.com/Loperdax/TeleWebFont/main/assets/logo.png" alt="">
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="badge"><b>v1.2.0</b> · اکستنشن کروم، اج و فایرفاکس</div>
+    <h1>فونت تلگرام وب،<br>همون‌طور که دوست داری.</h1>
+    <p class="sub">وزیرمتن، لطیف یا ایران‌سنس — با کنترل زنده‌ی سایز و وزن. بدون رفرش.</p>
+  </section>
+
+  <section class="demo">
+    <p class="demo-text" id="demo">سلام! این یه پیش‌نمایش زنده‌ست. فونت، سایز و وزنش رو از پایین عوض کن تا ببینی تلگرام وب چه شکلی می‌شه. ۱۲۳۴۵۶۷۸۹۰</p>
+
+    <div class="demo-controls">
+      <label class="ctl">فونت
+        <select id="fontSel">
+          <option value="Vazirmatn">وزیرمتن</option>
+          <option value="Lateef">لطیف</option>
+          <option value="Iranian Sans">ایران‌سنس</option>
+        </select>
+      </label>
+      <label class="ctl">سایز
+        <input type="range" id="sizeSel" min="14" max="40" value="22">
+        <output id="sizeOut">22px</output>
+      </label>
+      <label class="ctl">وزن
+        <input type="range" id="wSel" min="300" max="900" step="100" value="400">
+        <output id="wOut">۴۰۰</output>
+      </label>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="feat"><h3>🔤 سه فونت فارسی</h3><p>وزیرمتن، لطیف و ایران‌سنس. یه کلیک، بدون رفرش صفحه.</p></div>
+    <div class="feat"><h3>📏 سایز و وزن زنده</h3><p>سایز از ۸۰٪ تا ۱۵۰٪ و وزن از نازک تا سیاه، همون لحظه اعمال می‌شه.</p></div>
+    <div class="feat"><h3>🗂 پنل کناری جدا</h3><p>لیست چت‌ها می‌تونه سایز خودش رو نگه داره، مستقل از پنجره‌ی چت.</p></div>
+    <div class="feat"><h3>🪶 سبک و متن‌باز</h3><p>بدون ترکر، بدون بک‌اند. فقط یه content script کوچیک.</p></div>
+  </section>
+
+  <p class="section-title">فونت‌های داخل اکستنشن</p>
+  <section class="fonts">
+    <div class="font-card"><div class="sample" style="font-family:'Vazirmatn'">آب‌نبات چوبی</div><div class="nm">وزیرمتن</div></div>
+    <div class="font-card"><div class="sample" style="font-family:'Lateef'">آب‌نبات چوبی</div><div class="nm">لطیف</div></div>
+    <div class="font-card"><div class="sample" style="font-family:'Iranian Sans'">آب‌نبات چوبی</div><div class="nm">ایران‌سنس</div></div>
+  </section>
+
+  <p class="section-title">تغییرات اخیر</p>
+  <section class="changes">
+    <article class="rel">
+      <div class="rel-head"><span class="rel-v">v1.2.0</span><span class="rel-date">سپتامبر ۲۰۲۶</span></div>
+      <ul>
+        <li>افزودن فونت‌های لطیف و ایران‌سنس در کنار وزیرمتن</li>
+        <li>کنترل وزن فونت از نازک تا سیاه، به‌صورت زنده</li>
+        <li>انتخاب زبان پاپ‌آپ بین فارسی، انگلیسی و عربی</li>
+        <li>بازطراحی پاپ‌آپ با چیدمان فشرده‌تر و بدون اسکرول</li>
+        <li>پشتیبانی از فایرفاکس و اج</li>
+        <li>افزودن صفحه معرفی با دموی زنده</li>
+      </ul>
+    </article>
+
+    <article class="rel">
+      <div class="rel-head"><span class="rel-v">v1.1.0</span><span class="rel-date">پیش‌تر</span></div>
+      <ul>
+        <li>کنترل زنده سایز فونت از ۸۰٪ تا ۱۵۰٪</li>
+        <li>جداسازی سایز فونت پنل کناری از پنجره چت</li>
+        <li>ذخیره تنظیمات و اعمال بدون رفرش صفحه</li>
+      </ul>
+    </article>
+
+    <article class="rel">
+      <div class="rel-head"><span class="rel-v">v1.0.0</span><span class="rel-date">انتشار اولیه</span></div>
+      <ul>
+        <li>تغییر فونت تلگرام وب به وزیرمتن با کلید فعال/غیرفعال</li>
+      </ul>
+    </article>
+  </section>
+
+  <footer>
+    <div><a href="https://github.com/Loperdax/TeleWebFont">گیت‌هاب</a> · <a href="https://github.com/Loperdax/TeleWebFont/issues">گزارش مشکل</a> · MIT</div>
+    <div class="ltr"><a href="https://loperdax.github.io">By AmirMohammad Shamsi</a></div>
+  </footer>
+</div>
+
+<script>
+const demo = document.getElementById('demo');
+const fontSel = document.getElementById('fontSel');
+const sizeSel = document.getElementById('sizeSel');
+const sizeOut = document.getElementById('sizeOut');
+const wSel = document.getElementById('wSel');
+const wOut = document.getElementById('wOut');
+const fa = (n) => String(n).replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[d]);
+
+fontSel.oninput = () => { demo.style.fontFamily = `'${fontSel.value}'`; };
+sizeSel.oninput = () => { demo.style.fontSize = sizeSel.value + 'px'; sizeOut.textContent = sizeSel.value + 'px'; };
+wSel.oninput = () => { demo.style.fontWeight = wSel.value; wOut.textContent = fa(wSel.value); };
+wOut.textContent = fa(wSel.value);
+</script>
+
+</body>
+</html>

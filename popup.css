@@ -1,25 +1,23 @@
 @font-face {
     font-family: 'Vazirmatn';
-    font-weight: 400;
+    font-weight: 100 900;
     font-style: normal;
     font-display: swap;
-    src: url('fonts/Vazirmatn-Regular.woff2') format('woff2');
+    src: url('fonts/Vazirmatn[wght].woff2') format('woff2-variations');
 }
 
 @font-face {
-    font-family: 'Vazirmatn';
-    font-weight: 500;
-    font-style: normal;
+    font-family: 'LateefPreview';
+    font-weight: 200;
     font-display: swap;
-    src: url('fonts/Vazirmatn-Medium.woff2') format('woff2');
+    src: url('fonts/Lateef-ExtraLight.ttf') format('truetype');
 }
 
 @font-face {
-    font-family: 'Vazirmatn';
-    font-weight: 600;
-    font-style: normal;
+    font-family: 'LateefPreview';
+    font-weight: 300;
     font-display: swap;
-    src: url('fonts/Vazirmatn-SemiBold.woff2') format('woff2');
+    src: url('fonts/Lateef-Light.ttf') format('truetype');
 }
 
 @font-face {
@@ -31,9 +29,30 @@
 
 @font-face {
     font-family: 'LateefPreview';
+    font-weight: 500;
+    font-display: swap;
+    src: url('fonts/Lateef-Medium.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'LateefPreview';
+    font-weight: 600;
+    font-display: swap;
+    src: url('fonts/Lateef-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'LateefPreview';
     font-weight: 700;
     font-display: swap;
     src: url('fonts/Lateef-Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'LateefPreview';
+    font-weight: 800;
+    font-display: swap;
+    src: url('fonts/Lateef-ExtraBold.ttf') format('truetype');
 }
 
 @font-face {
@@ -241,6 +260,11 @@ body {
     font-weight: 600;
     color: #0a84ff;
     font-variant-numeric: tabular-nums;
+}
+
+.row-value.unavailable {
+    color: #8e8e93;
+    text-decoration: line-through;
 }
 
 .hidden-input {

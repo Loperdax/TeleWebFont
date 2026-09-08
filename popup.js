@@ -76,7 +76,7 @@ const I18N = {
         preview: 'پیش‌نمایش',
         previewText: 'سلام! این یک نمونه متن است.',
         digits: '۰۱۲۳۴۵۶۷۸۹',
-        w0: 'پیش‌فرض', w100: 'نازک', w200: 'خیلی نازک', w300: 'سبک', w400: 'معمولی',
+        w0: 'پیش‌فرض', w100: 'خیلی نازک', w200: 'نازک', w300: 'سبک', w400: 'معمولی',
         w500: 'متوسط', w600: 'نیمه‌ضخیم', w700: 'ضخیم', w800: 'خیلی ضخیم', w900: 'سیاه'
     },
     en: {
@@ -193,12 +193,23 @@ const PREVIEW_FAMILIES = {
     adobearabic: 'AdobeArabicPreview'
 };
 
+const LIGHTEST_WEIGHT = {
+    vazirmatn: 100,
+    lateef: 200,
+    iransans: 400,
+    yekan: 400,
+    mitra: 400,
+    adobearabic: 400
+};
+
 function updatePreview() {
     const size = parseInt(fontSizeSlider.value, 10);
     const weight = parseInt(fontWeightSlider.value, 10);
     previewText.style.fontFamily = `'${PREVIEW_FAMILIES[selectedFont]}', sans-serif`;
     previewText.style.fontSize = (15 * size / 100).toFixed(2) + 'px';
     previewText.style.fontWeight = weight || '';
+    const unavailable = weight > 0 && weight < LIGHTEST_WEIGHT[selectedFont];
+    fontWeightValue.classList.toggle('unavailable', unavailable);
 }
 
 chrome.storage.sync.get(['fontEnabled', 'fontSizePercent', 'includeSidePanel', 'fontWeight', 'fontFamily', 'lang'], (result) => {

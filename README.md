@@ -67,7 +67,7 @@
 
 ```
 telegram-font-changer/
-├── manifest.json       # تنظیمات اکستنشن (نسخه 1.3.0)
+├── manifest.json       # تنظیمات اکستنشن (نسخه 1.3.1)
 ├── README.md           # مستندات پروژه
 ├── content.js          # اسکریپت اصلی (تزریق فونت + سایزدهی زنده)
 ├── style.css           # استایل‌های اصلی فونت Vazirmatn
@@ -198,7 +198,7 @@ Open the link above and click **Add to Chrome** or **Add to Firefox**. That's it
 
 ```
 telegram-font-changer/
-├── manifest.json       # Extension settings (v1.3.0)
+├── manifest.json       # Extension settings (v1.3.1)
 ├── README.md           # Project documentation
 ├── content.js          # Main script (font injection + live sizing)
 ├── style.css           # Core Vazirmatn font styles

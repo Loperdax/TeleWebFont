@@ -89,6 +89,17 @@ vm.createContext(popupSandbox);
 vm.runInContext(fs.readFileSync(__dirname + '/popup.js', 'utf8'), popupSandbox);
 const I18N = vm.runInContext('I18N', popupSandbox);
 
+const PREVIEW_FAMILIES = vm.runInContext('PREVIEW_FAMILIES', popupSandbox);
+const LIGHTEST_WEIGHT = vm.runInContext('LIGHTEST_WEIGHT', popupSandbox);
+assert.deepStrictEqual(Object.keys(PREVIEW_FAMILIES).sort(), Object.keys(FONTS).sort(),
+    'every font needs a preview face');
+assert.deepStrictEqual(Object.keys(LIGHTEST_WEIGHT).sort(), Object.keys(FONTS).sort(),
+    'every font needs a lightest-weight entry');
+for (const [key, font] of Object.entries(FONTS)) {
+    const lightest = font.variable ? 100 : Math.min(...font.files.map(([, w]) => w));
+    assert.strictEqual(LIGHTEST_WEIGHT[key], lightest, `${key} lightest weight is stale`);
+}
+
 const markupKeys = [...new Set([...html.matchAll(/data-i18n="([^"]+)"/g)].map((m) => m[1]))];
 const weightKeys = Array.from({ length: 10 }, (_, i) => 'w' + i * 100);
 const langs = Object.keys(I18N);

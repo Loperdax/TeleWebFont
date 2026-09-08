@@ -1,9 +1,7 @@
-// Self-check for the CSS builders. Run: node test.js
 const assert = require('assert');
 const fs = require('fs');
 const vm = require('vm');
 
-// content.js runs in a content-script context; stub just enough to load it.
 const sandbox = {
   document: {
     getElementById: () => null,
@@ -25,7 +23,6 @@ const sandbox = {
 vm.createContext(sandbox);
 vm.runInContext(fs.readFileSync(__dirname + '/content.js', 'utf8'), sandbox);
 
-// Font weight rule: 0 means "leave Telegram's weights alone", anything else forces it.
 const weightCSS = (enabled, w) => {
   let written = null;
   sandbox.ensureStyleElement = (id, css) => { written = css; };
@@ -37,18 +34,19 @@ assert.strictEqual(weightCSS(true, 0), null, 'weight 0 = no rule');
 assert.strictEqual(weightCSS(false, 700), null, 'font disabled = no weight rule');
 assert.strictEqual(weightCSS(true, 700), '*{font-weight:700 !important;}');
 
-// Size rule: side panel excluded gets the inverse zoom so it stays at 100%.
-assert.strictEqual(sandbox.buildSizeRuleCSS(100, true), 'body{zoom:1.0000 !important;}');
-const at150 = sandbox.buildSizeRuleCSS(150, false);
-assert.ok(at150.startsWith('body{zoom:1.5000 !important;}'), 'body scales up');
-assert.ok(at150.includes('#column-left{zoom:0.6667 !important;}'), 'side panel cancels it out');
+const at150 = sandbox.buildSizeRuleCSS(150, true);
+assert.ok(at150.includes('#column-center{zoom:1.5000 !important;}'), 'main column scales up');
+assert.ok(at150.includes('#column-left{zoom:1.5000 !important;}'), 'side panel included');
+assert.ok(!/(^|\})body\{/.test(at150), 'body must not be zoomed: it offsets context menus');
 
-// Variable font covers the full range the weight slider can request.
+const noSide = sandbox.buildSizeRuleCSS(150, false);
+assert.ok(noSide.includes('#column-center{zoom:1.5000 !important;}'), 'main column still scales');
+assert.ok(!noSide.includes('#column-left'), 'side panel left untouched');
+
 const family = sandbox.buildFontFamilyCSS('vazirmatn');
 assert.ok(family.includes('font-weight: 100 900;'), 'variable font spans slider range');
 assert.ok(family.includes("font-family: 'Vazirmatn', sans-serif !important;"));
 
-// Each family applies its own name, and .ttf must declare truetype (not woff2).
 const lateef = sandbox.buildFontFamilyCSS('lateef');
 assert.ok(lateef.includes("font-family: 'Lateef', sans-serif !important;"));
 assert.ok(lateef.includes("format('truetype')"), 'ttf needs truetype format');
@@ -59,10 +57,8 @@ const iransans = sandbox.buildFontFamilyCSS('iransans');
 assert.ok(iransans.includes("font-family: 'Iranian Sans', sans-serif !important;"));
 assert.strictEqual((iransans.match(/@font-face/g) || []).length, 2, 'iransans ships 2 weights');
 
-// Unknown key falls back instead of emitting a broken rule.
 assert.strictEqual(sandbox.buildFontFamilyCSS('nope'), family, 'unknown font falls back');
 
-// Every registered file is actually on disk and exposed by the manifest.
 const manifest = JSON.parse(fs.readFileSync(__dirname + '/manifest.json', 'utf8'));
 const exposed = manifest.web_accessible_resources[0].resources;
 const FONTS = vm.runInContext('FONTS', sandbox);
@@ -75,13 +71,10 @@ for (const font of Object.values(FONTS)) {
     }
 }
 
-// Popup picker offers exactly the registered fonts.
 const html = fs.readFileSync(__dirname + '/popup.html', 'utf8');
 const offered = [...html.matchAll(/data-font="([^"]+)"/g)].map((m) => m[1]);
 assert.deepStrictEqual(offered.sort(), Object.keys(FONTS).sort(), 'picker matches registry');
 
-// --- popup i18n ---
-// Load popup.js far enough to read its I18N table (DOM calls are stubbed out).
 const popupSandbox = {
   document: {
     getElementById: () => ({ style: {}, classList: { toggle() {} }, querySelectorAll: () => [], addEventListener() {} }),
@@ -110,7 +103,6 @@ for (const code of langs) {
   assert.ok(['rtl', 'ltr'].includes(table.dir), `${code} has a valid dir`);
 }
 
-// Every flag button maps to a real locale.
 const flags = [...html.matchAll(/data-lang="([^"]+)"/g)].map((m) => m[1]);
 assert.deepStrictEqual(flags.sort(), langs.sort(), 'flags match locales');
 

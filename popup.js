@@ -10,8 +10,8 @@ const langPicker = document.getElementById('langPicker');
 const fontPicker = document.getElementById('fontPicker');
 const fontCard = document.getElementById('fontCard');
 const sideCard = document.getElementById('sideCard');
+const previewText = document.getElementById('previewText');
 
-// Dim the font panel's controls while the font is off.
 function setFontCardActive(enabled) {
     fontCard.classList.toggle('off', !enabled);
 }
@@ -70,6 +70,11 @@ const I18N = {
         fontVazirmatn: 'وزیرمتن',
         fontLateef: 'لطیف',
         fontIransans: 'ایران‌سنس',
+        fontYekan: 'یکان',
+        fontMitra: 'میترا',
+        fontAdobeArabic: 'ادوبی عربیک',
+        preview: 'پیش‌نمایش',
+        previewText: 'سلام! این یک نمونه متن است.',
         digits: '۰۱۲۳۴۵۶۷۸۹',
         w0: 'پیش‌فرض', w100: 'نازک', w200: 'خیلی نازک', w300: 'سبک', w400: 'معمولی',
         w500: 'متوسط', w600: 'نیمه‌ضخیم', w700: 'ضخیم', w800: 'خیلی ضخیم', w900: 'سیاه'
@@ -90,6 +95,11 @@ const I18N = {
         fontVazirmatn: 'Vazirmatn',
         fontLateef: 'Lateef',
         fontIransans: 'IRANSans',
+        fontYekan: 'Yekan',
+        fontMitra: 'B Mitra',
+        fontAdobeArabic: 'Adobe Arabic',
+        preview: 'Preview',
+        previewText: 'Hello! This is a sample text.',
         digits: '0123456789',
         w0: 'Default', w100: 'Thin', w200: 'ExtraLight', w300: 'Light', w400: 'Regular',
         w500: 'Medium', w600: 'SemiBold', w700: 'Bold', w800: 'ExtraBold', w900: 'Black'
@@ -110,6 +120,11 @@ const I18N = {
         fontVazirmatn: 'وزير متن',
         fontLateef: 'لطيف',
         fontIransans: 'إيران سانس',
+        fontYekan: 'يكان',
+        fontMitra: 'ميترا',
+        fontAdobeArabic: 'أدوبي أرابيك',
+        preview: 'معاينة',
+        previewText: 'مرحباً! هذا نص تجريبي.',
         digits: '٠١٢٣٤٥٦٧٨٩',
         w0: 'افتراضي', w100: 'رفيع جداً', w200: 'رفيع', w300: 'خفيف', w400: 'عادي',
         w500: 'متوسط', w600: 'نصف عريض', w700: 'عريض', w800: 'عريض جداً', w900: 'أسود'
@@ -118,7 +133,6 @@ const I18N = {
 
 let lang = 'fa';
 const t = (key) => I18N[lang][key];
-// Latin digits -> the active locale's digits.
 const localizeDigits = (s) => String(s).replace(/\d/g, (d) => t('digits')[+d]);
 
 function applyLanguage(code) {
@@ -133,11 +147,11 @@ function applyLanguage(code) {
         btn.classList.toggle('selected', btn.dataset.lang === lang);
     });
 
-    // Values that are built at runtime, not stored in the markup.
     fontSizeValue.textContent = localizeDigits(fontSizeSlider.value + '%');
     renderWeight(parseInt(fontWeightSlider.value, 10));
     updateSliderFill(fontSizeSlider);
     updateSliderFill(fontWeightSlider);
+    updatePreview();
 }
 
 langPicker.querySelectorAll('.lang-btn').forEach((btn) => {
@@ -159,6 +173,7 @@ function renderFontPicker(fontKey) {
 fontPicker.querySelectorAll('.font-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
         renderFontPicker(btn.dataset.font);
+        updatePreview();
         const st = currentState();
         silentStorageSet({ fontFamily: st.fontFamily });
         broadcastToTabs({ action: 'changeFontFamily', ...st });
@@ -167,6 +182,23 @@ fontPicker.querySelectorAll('.font-btn').forEach((btn) => {
 
 function renderWeight(weight) {
     fontWeightValue.textContent = t('w' + weight) || localizeDigits(weight);
+}
+
+const PREVIEW_FAMILIES = {
+    vazirmatn: 'Vazirmatn',
+    lateef: 'LateefPreview',
+    iransans: 'IranSansPreview',
+    yekan: 'YekanPreview',
+    mitra: 'MitraPreview',
+    adobearabic: 'AdobeArabicPreview'
+};
+
+function updatePreview() {
+    const size = parseInt(fontSizeSlider.value, 10);
+    const weight = parseInt(fontWeightSlider.value, 10);
+    previewText.style.fontFamily = `'${PREVIEW_FAMILIES[selectedFont]}', sans-serif`;
+    previewText.style.fontSize = (15 * size / 100).toFixed(2) + 'px';
+    previewText.style.fontWeight = weight || '';
 }
 
 chrome.storage.sync.get(['fontEnabled', 'fontSizePercent', 'includeSidePanel', 'fontWeight', 'fontFamily', 'lang'], (result) => {
@@ -181,7 +213,7 @@ chrome.storage.sync.get(['fontEnabled', 'fontSizePercent', 'includeSidePanel', '
     setFontCardActive(fontEnabled);
     fontSizeSlider.value = size;
     fontWeightSlider.value = weight;
-    applyLanguage(result.lang || 'fa'); // also renders the size/weight readouts
+    applyLanguage(result.lang || 'fa');
 });
 
 function broadcastToTabs(message) {
@@ -226,6 +258,7 @@ sidePanelToggle.addEventListener('change', () => {
 fontSizeSlider.addEventListener('input', () => {
     fontSizeValue.textContent = localizeDigits(parseInt(fontSizeSlider.value, 10) + '%');
     updateSliderFill(fontSizeSlider);
+    updatePreview();
 });
 
 fontSizeSlider.addEventListener('change', () => {
@@ -237,6 +270,7 @@ fontSizeSlider.addEventListener('change', () => {
 fontWeightSlider.addEventListener('input', () => {
     renderWeight(parseInt(fontWeightSlider.value, 10));
     updateSliderFill(fontWeightSlider);
+    updatePreview();
 });
 
 fontWeightSlider.addEventListener('change', () => {

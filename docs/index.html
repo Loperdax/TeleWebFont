@@ -24,6 +24,16 @@
   src:url('../fonts/irsans.ttf') format('truetype');}
 @font-face{font-family:'Iranian Sans';font-weight:700;font-display:swap;
   src:url('../fonts/irsansb.ttf') format('truetype');}
+@font-face{font-family:'Yekan';font-weight:400;font-display:swap;
+  src:url('../fonts/yekan.ttf') format('truetype');}
+@font-face{font-family:'B Mitra';font-weight:400;font-display:swap;
+  src:url('../fonts/BMitra-Regular.ttf') format('truetype');}
+@font-face{font-family:'B Mitra';font-weight:700;font-display:swap;
+  src:url('../fonts/BMitra-Bold.ttf') format('truetype');}
+@font-face{font-family:'Adobe Arabic';font-weight:400;font-display:swap;
+  src:url('../fonts/AdobeArabic-Regular.otf') format('opentype');}
+@font-face{font-family:'Adobe Arabic';font-weight:700;font-display:swap;
+  src:url('../fonts/AdobeArabic-Bold.otf') format('opentype');}
 
 :root{
   --bg:#faf9f7; --panel:#fff; --ink:#1c1c20; --muted:#6b6b73;
@@ -118,9 +128,9 @@ footer a:hover{color:var(--accent)}
   </header>
 
   <section class="hero">
-    <div class="badge"><b>v1.2.0</b> · اکستنشن کروم، اج و فایرفاکس</div>
+    <div class="badge"><b>v1.3.0</b> · اکستنشن کروم، اج و فایرفاکس</div>
     <h1>فونت تلگرام وب،<br>همون‌طور که دوست داری.</h1>
-    <p class="sub">وزیرمتن، لطیف یا ایران‌سنس — با کنترل زنده‌ی سایز و وزن. بدون رفرش.</p>
+    <p class="sub">شش فونت فارسی — با کنترل زنده‌ی سایز و وزن. بدون رفرش.</p>
   </section>
 
   <section class="demo">
@@ -132,6 +142,9 @@ footer a:hover{color:var(--accent)}
           <option value="Vazirmatn">وزیرمتن</option>
           <option value="Lateef">لطیف</option>
           <option value="Iranian Sans">ایران‌سنس</option>
+          <option value="Yekan">یکان</option>
+          <option value="B Mitra">میترا</option>
+          <option value="Adobe Arabic">ادوبی عربیک</option>
         </select>
       </label>
       <label class="ctl">سایز
@@ -146,8 +159,9 @@ footer a:hover{color:var(--accent)}
   </section>
 
   <section class="features">
-    <div class="feat"><h3>🔤 سه فونت فارسی</h3><p>وزیرمتن، لطیف و ایران‌سنس. یه کلیک، بدون رفرش صفحه.</p></div>
-    <div class="feat"><h3>📏 سایز و وزن زنده</h3><p>سایز از ۸۰٪ تا ۱۵۰٪ و وزن از نازک تا سیاه، همون لحظه اعمال می‌شه.</p></div>
+    <div class="feat"><h3>🔤 شش فونت فارسی</h3><p>وزیرمتن، لطیف، ایران‌سنس، یکان، میترا و ادوبی عربیک. یه کلیک، بدون رفرش صفحه.</p></div>
+    <div class="feat"><h3>👁 پیش‌نمایش زنده</h3><p>قبل از اعمال، نمونه متن داخل پاپ‌آپ نشون می‌ده فونت و سایز و وزن چه شکلی می‌شن.</p></div>
+    <div class="feat"><h3>📏 سایز و وزن</h3><p>سایز از ۸۰٪ تا ۱۵۰٪ و وزن از نازک تا سیاه.</p></div>
     <div class="feat"><h3>🗂 پنل کناری جدا</h3><p>لیست چت‌ها می‌تونه سایز خودش رو نگه داره، مستقل از پنجره‌ی چت.</p></div>
     <div class="feat"><h3>🪶 سبک و متن‌باز</h3><p>بدون ترکر، بدون بک‌اند. فقط یه content script کوچیک.</p></div>
   </section>
@@ -157,10 +171,23 @@ footer a:hover{color:var(--accent)}
     <div class="font-card"><div class="sample" style="font-family:'Vazirmatn'">آب‌نبات چوبی</div><div class="nm">وزیرمتن</div></div>
     <div class="font-card"><div class="sample" style="font-family:'Lateef'">آب‌نبات چوبی</div><div class="nm">لطیف</div></div>
     <div class="font-card"><div class="sample" style="font-family:'Iranian Sans'">آب‌نبات چوبی</div><div class="nm">ایران‌سنس</div></div>
+    <div class="font-card"><div class="sample" style="font-family:'Yekan'">آب‌نبات چوبی</div><div class="nm">یکان</div></div>
+    <div class="font-card"><div class="sample" style="font-family:'B Mitra'">آب‌نبات چوبی</div><div class="nm">میترا</div></div>
+    <div class="font-card"><div class="sample" style="font-family:'Adobe Arabic'">آب‌نبات چوبی</div><div class="nm">ادوبی عربیک</div></div>
   </section>
 
   <p class="section-title">تغییرات اخیر</p>
   <section class="changes">
+    <article class="rel">
+      <div class="rel-head"><span class="rel-v">v1.3.0</span><span class="rel-date">سپتامبر ۲۰۲۶</span></div>
+      <ul>
+        <li>افزودن سه فونت جدید: یکان، میترا و ادوبی عربیک</li>
+        <li>پنل پیش‌نمایش در پاپ‌آپ؛ نمونه متن هم‌زمان با حرکت اسلایدر عوض می‌شه</li>
+        <li>رفع باگ جابه‌جایی منوی راست‌کلیک در سایزهای بالای ۱۰۰٪</li>
+        <li>انتشار رسمی در فروشگاه افزونه‌های فایرفاکس</li>
+      </ul>
+    </article>
+
     <article class="rel">
       <div class="rel-head"><span class="rel-v">v1.2.0</span><span class="rel-date">سپتامبر ۲۰۲۶</span></div>
       <ul>

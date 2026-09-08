@@ -22,7 +22,6 @@
     src: url('fonts/Vazirmatn-SemiBold.woff2') format('woff2');
 }
 
-/* Preview faces for the font picker buttons */
 @font-face {
     font-family: 'LateefPreview';
     font-weight: 400;
@@ -31,10 +30,59 @@
 }
 
 @font-face {
+    font-family: 'LateefPreview';
+    font-weight: 700;
+    font-display: swap;
+    src: url('fonts/Lateef-Bold.ttf') format('truetype');
+}
+
+@font-face {
     font-family: 'IranSansPreview';
     font-weight: 400;
     font-display: swap;
     src: url('fonts/irsans.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'IranSansPreview';
+    font-weight: 700;
+    font-display: swap;
+    src: url('fonts/irsansb.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'YekanPreview';
+    font-weight: 400;
+    font-display: swap;
+    src: url('fonts/yekan.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'MitraPreview';
+    font-weight: 400;
+    font-display: swap;
+    src: url('fonts/BMitra-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'MitraPreview';
+    font-weight: 700;
+    font-display: swap;
+    src: url('fonts/BMitra-Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'AdobeArabicPreview';
+    font-weight: 400;
+    font-display: swap;
+    src: url('fonts/AdobeArabic-Regular.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'AdobeArabicPreview';
+    font-weight: 700;
+    font-display: swap;
+    src: url('fonts/AdobeArabic-Bold.otf') format('opentype');
 }
 
 * {
@@ -64,7 +112,6 @@ body {
     gap: 10px;
 }
 
-/* ---- header ---- */
 
 .popup-header {
     display: flex;
@@ -138,7 +185,6 @@ body {
     background: #48484a;
 }
 
-/* ---- panels & rows ---- */
 
 .panel {
     background: #2c2c2e;
@@ -151,6 +197,20 @@ body {
     align-items: center;
     gap: 10px;
     padding: 11px 13px;
+}
+
+#previewCard {
+    padding: 11px 13px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.preview-text {
+    margin: 0;
+    line-height: 1.6;
+    color: #f2f2f7;
+    word-break: break-word;
 }
 
 .row + .row {
@@ -191,7 +251,6 @@ body {
     height: 0;
 }
 
-/* ---- iOS-style switch ---- */
 
 .switch {
     position: relative;
@@ -223,7 +282,6 @@ body {
 
 #fontSwitch[aria-checked="true"] { background: #0a84ff; }
 
-/* ---- font picker ---- */
 
 .font-picker {
     display: grid;
@@ -252,7 +310,6 @@ body {
     background: #48484a;
 }
 
-/* ---- sliders ---- */
 
 input[type="range"] {
     -webkit-appearance: none;
@@ -287,14 +344,12 @@ input[type="range"]::-webkit-slider-thumb {
 
 input[type="range"]::-webkit-slider-thumb:active { transform: scale(1.12); }
 
-/* ---- disabled state ---- */
 
 .panel.off .row-stack {
     opacity: 0.4;
     pointer-events: none;
 }
 
-/* ---- footer ---- */
 
 .popup-footer {
     display: flex;

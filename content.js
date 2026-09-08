@@ -1,4 +1,3 @@
-// Weights a family doesn't ship are synthesized by the browser.
 const FONTS = {
   vazirmatn: {
     family: 'Vazirmatn',
@@ -34,6 +33,26 @@ const FONTS = {
       ['fonts/irsansb.ttf', 700],
     ],
   },
+  yekan: {
+    family: 'Yekan',
+    files: [
+      ['fonts/yekan.ttf', 400],
+    ],
+  },
+  mitra: {
+    family: 'B Mitra',
+    files: [
+      ['fonts/BMitra-Regular.ttf', 400],
+      ['fonts/BMitra-Bold.ttf', 700],
+    ],
+  },
+  adobearabic: {
+    family: 'Adobe Arabic',
+    files: [
+      ['fonts/AdobeArabic-Regular.otf', 400],
+      ['fonts/AdobeArabic-Bold.otf', 700],
+    ],
+  },
 };
 
 const DEFAULT_FONT = 'vazirmatn';
@@ -54,19 +73,30 @@ const sidePanelSelectors = [
 let currentFontEnabled = true;
 let currentFontSizePercent = 100;
 let currentIncludeSidePanel = true;
-let currentFontWeight = 0; // 0 = keep Telegram's own weights
+let currentFontWeight = 0;
 let currentFontFamily = DEFAULT_FONT;
 
 const sidePanelCache = new Set();
 let sidePanelCacheTime = 0;
 const SIDE_CACHE_TTL_MS = 150;
 
+const FONT_FORMATS = {
+  ttf: 'truetype',
+  otf: 'opentype',
+  woff: 'woff',
+  woff2: 'woff2',
+};
+
+function fontFormat(path) {
+  return FONT_FORMATS[path.slice(path.lastIndexOf('.') + 1).toLowerCase()] || 'woff2';
+}
+
 function buildFontFamilyCSS(fontKey) {
   const font = FONTS[fontKey] || FONTS[DEFAULT_FONT];
   let css = '';
 
   font.files.forEach(([path, weight]) => {
-    const format = path.endsWith('.ttf') ? 'truetype' : 'woff2';
+    const format = fontFormat(path);
     css += `
 @font-face {
   font-family: '${font.family}';
@@ -96,14 +126,18 @@ function buildFontFamilyCSS(fontKey) {
   return css;
 }
 
+const mainPanelSelectors = [
+  '#column-center',
+  '.column-center',
+  '#MiddleColumn',
+];
+
 function buildSizeRuleCSS(percent, includeSidePanel) {
   const scale = (percent / 100).toFixed(4);
-  let css = `body{zoom:${scale} !important;}`;
-  if (!includeSidePanel) {
-    const anti = (100 / percent).toFixed(4);
-    css += sidePanelSelectors.map((s) => `${s}{zoom:${anti} !important;}`).join('');
-  }
-  return css;
+  const targets = includeSidePanel
+    ? mainPanelSelectors.concat(sidePanelSelectors)
+    : mainPanelSelectors;
+  return targets.map((s) => `${s}{zoom:${scale} !important;}`).join('');
 }
 
 function ensureStyleElement(id, content) {
@@ -158,7 +192,7 @@ function applyFontWeight(enabled, weight) {
 
 function applySideZoomInline(includeSidePanel, percent) {
   refreshSidePanelCache(false);
-  const zoomValue = includeSidePanel ? '1' : (100 / percent).toFixed(4);
+  const zoomValue = includeSidePanel ? (percent / 100).toFixed(4) : '1';
   sidePanelCache.forEach((el) => {
     if (el instanceof HTMLElement) el.style.zoom = zoomValue;
   });
@@ -187,10 +221,9 @@ function applySizeRuleStyle(percent, includeSidePanel) {
 function applyFontSize(percent, includeSidePanel) {
   currentFontSizePercent = percent;
   currentIncludeSidePanel = includeSidePanel;
-  const scaleStr = (percent / 100).toFixed(4);
   applySizeRuleStyle(percent, includeSidePanel);
   try {
-    if (document.body) document.body.style.zoom = scaleStr;
+    if (document.body) document.body.style.zoom = '';
   } catch (e) {}
   applySideZoomInline(includeSidePanel, percent);
 }
@@ -205,7 +238,6 @@ const ACTIONS = ['toggleFont', 'changeFontSize', 'toggleSidePanel', 'changeFontW
 
 chrome.runtime.onMessage.addListener((request) => {
   if (!ACTIONS.includes(request.action)) return;
-  // Every popup message carries the full state, so just take whatever is present.
   if (typeof request.enabled === 'boolean') currentFontEnabled = request.enabled;
   if (typeof request.fontSizePercent === 'number') currentFontSizePercent = request.fontSizePercent;
   if (typeof request.includeSidePanel === 'boolean') currentIncludeSidePanel = request.includeSidePanel;

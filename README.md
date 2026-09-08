@@ -8,6 +8,7 @@
 ### ⚡ Telegram Font Changer
 
 [![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Install-blue?logo=google-chrome&logoColor=white)](https://chromewebstore.google.com/detail/telegram-font-changer/cceldipdhnhkcmdooeehbnciimlahlmp)
+[![Firefox Add-ons](https://img.shields.io/badge/Firefox%20Add--ons-Install-orange?logo=firefoxbrowser&logoColor=white)](https://addons.mozilla.org/en-US/firefox/addon/telegram-font-changer/)
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Vazirmatn Font](https://img.shields.io/badge/Font-Vazirmatn-9cf?logo=font-awesome)](https://github.com/rastikerdar/vazirmatn)
 
@@ -26,7 +27,8 @@
 ## ✨ امکانات
 
 - **تغییر خودکار فونت** تلگرام وب با دکمه‌ی فعال / غیرفعال
-- **سه فونت فارسی** — وزیرمتن، لطیف و ایران‌سنس، قابل انتخاب از پاپ‌آپ
+- **شش فونت فارسی** — وزیرمتن، لطیف، ایران‌سنس، یکان، میترا و ادوبی عربیک، قابل انتخاب از پاپ‌آپ
+- **پیش‌نمایش زنده** — نمونه متن داخل پاپ‌آپ، هم‌زمان با تغییر اسلایدرها
 - **کنترل سایز فونت**
 - **کنترل وزن فونت** — از نازک تا سیاه، یا سپردنش به خود تلگرام
 - **جداسازی ساید پنل** — امکان فعال / غیرفعال کردن تغییر سایز فونت در پنل کناری (لیست چت‌ها) به صورت مجزا از پنل اصلی چت
@@ -42,13 +44,13 @@
 
 <div align="center">
 
-**[📥 نصب از Chrome Web Store](https://chromewebstore.google.com/detail/telegram-font-changer/cceldipdhnhkcmdooeehbnciimlahlmp)** · **[🌐 صفحه معرفی](https://loperdax.github.io/TeleWebFont/)**
+**[📥 نصب از Chrome Web Store](https://chromewebstore.google.com/detail/telegram-font-changer/cceldipdhnhkcmdooeehbnciimlahlmp)** · **[🦊 نصب از Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/telegram-font-changer/)** · **[🌐 صفحه معرفی](https://loperdax.github.io/TeleWebFont/)**
 
 </div>
 
-روی لینک بالا بزنید و **Add to Chrome** رو کلیک کنید. همین! بعدش برید به [web.telegram.org](https://web.telegram.org)، روی آیکون اکستنشن کلیک کنید و از فونت و سایز دلخواه لذت ببرید 🎉
+روی لینک بالا بزنید و **Add to Chrome** یا **Add to Firefox** رو کلیک کنید. همین! بعدش برید به [web.telegram.org](https://web.telegram.org)، روی آیکون اکستنشن کلیک کنید و از فونت و سایز دلخواه لذت ببرید 🎉
 
-> روی **Edge** هم همین لینک کار می‌کنه — کافیه اجازه‌ی نصب از فروشگاه کروم رو بدید.
+> روی **Edge** هم لینک کروم کار می‌کنه — کافیه اجازه‌ی نصب از فروشگاه کروم رو بدید.
 
 ### نصب دستی (برای توسعه‌دهنده‌ها) 🛠
 
@@ -65,7 +67,7 @@
 
 ```
 telegram-font-changer/
-├── manifest.json       # تنظیمات اکستنشن (نسخه 1.2.0)
+├── manifest.json       # تنظیمات اکستنشن (نسخه 1.3.0)
 ├── README.md           # مستندات پروژه
 ├── content.js          # اسکریپت اصلی (تزریق فونت + سایزدهی زنده)
 ├── style.css           # استایل‌های اصلی فونت Vazirmatn
@@ -91,7 +93,10 @@ telegram-font-changer/
     ├── Vazirmatn[wght].woff2
     ├── Lateef-*.ttf         # لطیف (۷ وزن)
     ├── irsans.ttf           # ایران‌سنس (معمولی)
-    └── irsansb.ttf          # ایران‌سنس (ضخیم)
+    ├── irsansb.ttf          # ایران‌سنس (ضخیم)
+    ├── yekan.ttf            # یکان
+    ├── BMitra-*.ttf         # میترا (معمولی و ضخیم)
+    └── AdobeArabic-*.otf    # ادوبی عربیک (معمولی و ضخیم)
 ```
 
 ---
@@ -136,6 +141,7 @@ telegram-font-changer/
 # 🚀 Telegram Font Changer
 
 [![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Install-blue?logo=google-chrome&logoColor=white)](https://chromewebstore.google.com/detail/telegram-font-changer/cceldipdhnhkcmdooeehbnciimlahlmp)
+[![Firefox Add-ons](https://img.shields.io/badge/Firefox%20Add--ons-Install-orange?logo=firefoxbrowser&logoColor=white)](https://addons.mozilla.org/en-US/firefox/addon/telegram-font-changer/)
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Vazirmatn Font](https://img.shields.io/badge/Font-Vazirmatn-9cf?logo=font-awesome)](https://github.com/rastikerdar/vazirmatn)
 
@@ -152,7 +158,8 @@ If you use Telegram Web and want to read Persian & Arabic text with the beautifu
 ## ✨ Features
 
 - **Auto font change** of Telegram Web with an Enable / Disable button
-- **Three Persian fonts** — Vazirmatn, Lateef and IRANSans, switchable from the popup
+- **Six Persian fonts** — Vazirmatn, Lateef, IRANSans, Yekan, B Mitra and Adobe Arabic, switchable from the popup
+- **Live preview** — a sample text inside the popup updates as you move the sliders
 - **Font size control**
 - **Font weight control** — from Thin to Black, or leave it to Telegram
 - **Side-panel isolation** — enable / disable font-size changes on the chat sidebar independently from the main chat panel
@@ -168,13 +175,13 @@ If you use Telegram Web and want to read Persian & Arabic text with the beautifu
 
 <div align="center">
 
-**[📥 Install from the Chrome Web Store](https://chromewebstore.google.com/detail/telegram-font-changer/cceldipdhnhkcmdooeehbnciimlahlmp)** · **[🌐 Homepage](https://loperdax.github.io/TeleWebFont/)**
+**[📥 Install from the Chrome Web Store](https://chromewebstore.google.com/detail/telegram-font-changer/cceldipdhnhkcmdooeehbnciimlahlmp)** · **[🦊 Install from Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/telegram-font-changer/)** · **[🌐 Homepage](https://loperdax.github.io/TeleWebFont/)**
 
 </div>
 
-Open the link above and click **Add to Chrome**. That's it — then go to [web.telegram.org](https://web.telegram.org), click the extension icon, and enjoy your new font & size 🎉
+Open the link above and click **Add to Chrome** or **Add to Firefox**. That's it — then go to [web.telegram.org](https://web.telegram.org), click the extension icon, and enjoy your new font & size 🎉
 
-> The same link works on **Edge** — just allow installing extensions from the Chrome Web Store.
+> The Chrome link also works on **Edge** — just allow installing extensions from the Chrome Web Store.
 
 ### Manual install (for developers) 🛠
 
@@ -191,7 +198,7 @@ Open the link above and click **Add to Chrome**. That's it — then go to [web.t
 
 ```
 telegram-font-changer/
-├── manifest.json       # Extension settings (v1.2.0)
+├── manifest.json       # Extension settings (v1.3.0)
 ├── README.md           # Project documentation
 ├── content.js          # Main script (font injection + live sizing)
 ├── style.css           # Core Vazirmatn font styles
@@ -217,7 +224,10 @@ telegram-font-changer/
     ├── Vazirmatn[wght].woff2
     ├── Lateef-*.ttf         # Lateef (7 weights)
     ├── irsans.ttf           # IRANSans (regular)
-    └── irsansb.ttf          # IRANSans (bold)
+    ├── irsansb.ttf          # IRANSans (bold)
+    ├── yekan.ttf            # Yekan
+    ├── BMitra-*.ttf         # B Mitra (regular & bold)
+    └── AdobeArabic-*.otf    # Adobe Arabic (regular & bold)
 ```
 
 ---

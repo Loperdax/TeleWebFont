@@ -8,8 +8,8 @@
 
 html:has(#telewebfont-family) .bubble .message .reactions-like-block:not(.has-no-reactions) > .time:not(.is-floating):has(> .time-inner) {
   display: block;
-  flex: 1 0 auto;
-  align-self: flex-end;
+  flex: 0 0 100%;
+  margin-inline-start: 0;
 
   & > :not(.time-inner) {
     display: none;
@@ -19,4 +19,12 @@ html:has(#telewebfont-family) .bubble .message .reactions-like-block:not(.has-no
     position: static;
     justify-content: flex-end;
   }
+}
+
+html:has(#telewebfont-family) .Message .Reactions > .MessageMeta.reactions-offset {
+  box-sizing: border-box;
+  flex: 0 0 100%;
+  inset: auto;
+  justify-content: flex-end;
+  margin: 0;
 }

@@ -6,6 +6,7 @@ const sandbox = {
   document: {
     getElementById: () => null,
     createElement: () => ({ style: {} }),
+    fonts: { addEventListener: () => {} },
     querySelectorAll: () => [],
     addEventListener: () => {},
     head: { appendChild: () => {} },
@@ -35,12 +36,12 @@ assert.strictEqual(weightCSS(false, 700), null, 'font disabled = no weight rule'
 assert.strictEqual(weightCSS(true, 700), '*{font-weight:700 !important;}');
 
 const at150 = sandbox.buildSizeRuleCSS(150, true);
-assert.ok(at150.includes('#column-center{zoom:1.5000 !important;}'), 'main column scales up');
-assert.ok(at150.includes('#column-left{zoom:1.5000 !important;}'), 'side panel included');
+assert.ok(at150.includes('#column-center{zoom:1.5000 !important;--telewebfont-scale:1.5000;}'), 'main column shares its zoom with spoiler overlays');
+assert.ok(at150.includes('#column-left{zoom:1.5000 !important;'), 'side panel included');
 assert.ok(!/(^|\})body\{/.test(at150), 'body must not be zoomed: it offsets context menus');
 
 const noSide = sandbox.buildSizeRuleCSS(150, false);
-assert.ok(noSide.includes('#column-center{zoom:1.5000 !important;}'), 'main column still scales');
+assert.ok(noSide.includes('#column-center{zoom:1.5000 !important;'), 'main column still scales');
 assert.ok(!noSide.includes('#column-left'), 'side panel left untouched');
 
 const family = sandbox.buildFontFamilyCSS('vazirmatn');

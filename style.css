@@ -1,0 +1,22 @@
+.telewebfont-refresh-spoilers .message-spoiler-overlay {
+  width: calc(100% + 1px);
+}
+
+.message-spoiler-overlay .message-spoiler-overlay__canvas--committed-size {
+  transform: scale(calc(1 / (var(--dpr) * var(--telewebfont-scale, 1))));
+}
+
+html:has(#telewebfont-family) .bubble .message .reactions-like-block:not(.has-no-reactions) > .time:not(.is-floating):has(> .time-inner) {
+  display: block;
+  flex: 1 0 auto;
+  align-self: flex-end;
+
+  & > :not(.time-inner) {
+    display: none;
+  }
+
+  & > .time-inner {
+    position: static;
+    justify-content: flex-end;
+  }
+}

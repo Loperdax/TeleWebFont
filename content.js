@@ -137,7 +137,7 @@ function buildSizeRuleCSS(percent, includeSidePanel) {
   const targets = includeSidePanel
     ? mainPanelSelectors.concat(sidePanelSelectors)
     : mainPanelSelectors;
-  return targets.map((s) => `${s}{zoom:${scale} !important;}`).join('');
+  return targets.map((s) => `${s}{zoom:${scale} !important;--telewebfont-scale:${scale};}`).join('');
 }
 
 function ensureStyleElement(id, content) {
@@ -228,10 +228,25 @@ function applyFontSize(percent, includeSidePanel) {
   applySideZoomInline(includeSidePanel, percent);
 }
 
+let spoilerRefreshFrame = null;
+
+function refreshSpoilerLayout() {
+  if (spoilerRefreshFrame !== null || !document.querySelector('.message-spoiler-overlay')) return;
+  spoilerRefreshFrame = requestAnimationFrame(() => {
+    const root = document.documentElement;
+    root.classList.add('telewebfont-refresh-spoilers');
+    spoilerRefreshFrame = requestAnimationFrame(() => {
+      root.classList.remove('telewebfont-refresh-spoilers');
+      spoilerRefreshFrame = null;
+    });
+  });
+}
+
 function applyState() {
   applyFontFamily(currentFontEnabled, currentFontFamily);
   applyFontWeight(currentFontEnabled, currentFontWeight);
   applyFontSize(currentFontSizePercent, currentIncludeSidePanel);
+  refreshSpoilerLayout();
 }
 
 const ACTIONS = ['toggleFont', 'changeFontSize', 'toggleSidePanel', 'changeFontWeight', 'changeFontFamily'];
@@ -296,6 +311,7 @@ function loadStateAndApply() {
   });
 }
 
+document.fonts.addEventListener('loadingdone', refreshSpoilerLayout);
 loadStateAndApply();
 
 if (document.readyState === 'loading') {

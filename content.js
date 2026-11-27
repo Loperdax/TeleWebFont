@@ -134,10 +134,23 @@ const mainPanelSelectors = [
 
 function buildSizeRuleCSS(percent, includeSidePanel) {
   const scale = (percent / 100).toFixed(4);
-  const targets = includeSidePanel
-    ? mainPanelSelectors.concat(sidePanelSelectors)
-    : mainPanelSelectors;
-  return targets.map((s) => `${s}{zoom:${scale} !important;--telewebfont-scale:${scale};}`).join('');
+  const sizes = {
+    'messages-text-size': '16px',
+    'messages-secondary-text-size': '14px',
+    'messages-time-text-size': '12px',
+    'messages-service-text-size': '15px',
+    'messages-custom-emoji-size': '20px',
+    'message-text-size': '1rem',
+  };
+  const baseSizes = Object.entries(sizes).map(([name, fallback]) =>
+    `--telewebfont-base-${name}:var(--${name},${fallback});`).join('');
+  const scaledSizes = percent === 100 ? '' : Object.keys(sizes).map((name) =>
+    `--${name}:calc(var(--telewebfont-base-${name}) * ${scale}) !important;`).join('');
+  const mainCSS = mainPanelSelectors.map((s) =>
+    `${s}{${scaledSizes}--telewebfont-scale:1;}`).join('');
+  const sideCSS = includeSidePanel ? sidePanelSelectors.map((s) =>
+    `${s}{zoom:${scale} !important;--telewebfont-scale:${scale};}`).join('') : '';
+  return `:root{${baseSizes}}${mainCSS}${sideCSS}`;
 }
 
 function ensureStyleElement(id, content) {
@@ -147,7 +160,7 @@ function ensureStyleElement(id, content) {
     styleEl.id = id;
     document.head.appendChild(styleEl);
   }
-  styleEl.textContent = content;
+  if (styleEl.textContent !== content) styleEl.textContent = content;
 }
 
 function removeStyleElement(id) {
@@ -192,9 +205,9 @@ function applyFontWeight(enabled, weight) {
 
 function applySideZoomInline(includeSidePanel, percent) {
   refreshSidePanelCache(false);
-  const zoomValue = includeSidePanel ? (percent / 100).toFixed(4) : '1';
+  const zoomValue = includeSidePanel ? String(percent / 100) : '1';
   sidePanelCache.forEach((el) => {
-    if (el instanceof HTMLElement) el.style.zoom = zoomValue;
+    if (el instanceof HTMLElement && el.style.zoom !== zoomValue) el.style.zoom = zoomValue;
   });
 }
 

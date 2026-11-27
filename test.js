@@ -36,13 +36,17 @@ assert.strictEqual(weightCSS(false, 700), null, 'font disabled = no weight rule'
 assert.strictEqual(weightCSS(true, 700), '*{font-weight:700 !important;}');
 
 const at150 = sandbox.buildSizeRuleCSS(150, true);
-assert.ok(at150.includes('#column-center{zoom:1.5000 !important;--telewebfont-scale:1.5000;}'), 'main column shares its zoom with spoiler overlays');
+assert.ok(at150.includes('--messages-text-size:calc(var(--telewebfont-base-messages-text-size) * 1.5000) !important;'), 'Web K scales native message text sizes');
+assert.ok(at150.includes('--message-text-size:calc(var(--telewebfont-base-message-text-size) * 1.5000) !important;'), 'Web A scales native message text sizes');
+assert.ok(at150.includes('--telewebfont-scale:1;'), 'main spoiler canvases stay in unzoomed coordinates');
+assert.ok(!/#(?:column-center|MiddleColumn)\{[^}]*zoom:/.test(at150), 'chat scroll containers must not be zoomed');
 assert.ok(at150.includes('#column-left{zoom:1.5000 !important;'), 'side panel included');
 assert.ok(!/(^|\})body\{/.test(at150), 'body must not be zoomed: it offsets context menus');
 
 const noSide = sandbox.buildSizeRuleCSS(150, false);
-assert.ok(noSide.includes('#column-center{zoom:1.5000 !important;'), 'main column still scales');
+assert.ok(noSide.includes('#column-center{--messages-text-size:'), 'main column still scales');
 assert.ok(!noSide.includes('#column-left'), 'side panel left untouched');
+assert.ok(!sandbox.buildSizeRuleCSS(100, false).includes(' !important;'), '100% preserves Telegram native text sizes');
 
 const family = sandbox.buildFontFamilyCSS('vazirmatn');
 assert.ok(family.includes('font-weight: 100 900;'), 'variable font spans slider range');
